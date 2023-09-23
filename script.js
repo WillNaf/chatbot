@@ -1,48 +1,39 @@
 class ChatBot {
-    constructor(endpoint) {
-        this.endpoint = 'wss://13db75kd0a.execute-api.us-east-1.amazonaws.com/production';
-        this.socket = null;
+    constructor(endpoint, sessionId) {
+        this.endpoint = endpoint;
+        this.sessionId = sessionId;
+        this.ws = new WebSocket(endpoint);
         this.chatBox = document.getElementById('chat-box');
         this.userInput = document.getElementById('user-input');
 
-        // Bindings
-        this.onOpen = this.onOpen.bind(this);
-        this.onMessage = this.onMessage.bind(this);
-        this.onError = this.onError.bind(this);
-        this.onClose = this.onClose.bind(this);
-        this.sendMessage = this.sendMessage.bind(this);
-        
-        // Setup event listeners
-        this.setupWebSocket();
+        this.init();
     }
 
-    setupWebSocket() {
-        this.socket = new WebSocket(this.endpoint);
+    init() {
+        this.ws.addEventListener('open', this.onConnectionOpen.bind(this));
+        this.ws.addEventListener('message', this.onMessageReceived.bind(this));
+        this.ws.addEventListener('error', this.onError.bind(this));
+        this.ws.addEventListener('close', this.onConnectionClose.bind(this));
 
-        // Event listeners for the WebSocket
-        this.socket.addEventListener('open', this.onOpen);
-        this.socket.addEventListener('message', this.onMessage);
-        this.socket.addEventListener('error', this.onError);
-        this.socket.addEventListener('close', this.onClose);
+        document.addEventListener('click', this.delegateSendEvent.bind(this));
     }
 
-    onOpen(event) {
-        console.log('Connected to the chat server:', event);
+    onConnectionOpen(event) {
+        console.log("Connected to the WebSocket:", event);
     }
 
-    onMessage(event) {
-        let message = JSON.parse(event.data);
-        if (message.type === 'botResponse') {
-            this.updateChatBox(`Bot: ${message.text}`);
+    onMessageReceived(event) {
+        const data = JSON.parse(event.data);
+        if (data.type === 'botResponse') {
+            this.updateChat('Bot: ' + data.text);
         }
     }
 
-    onError(event) {
-        console.error('WebSocket Error:', event);
-        this.updateChatBox('An error occurred. Please try again later.');
+    onError(error) {
+        console.error("WebSocket Error:", error);
     }
 
-    onClose(event) {
+    onConnectionClose(event) {
         if (event.wasClean) {
             console.log(`Connection closed cleanly, code=${event.code}, reason=${event.reason}`);
         } else {
@@ -50,30 +41,39 @@ class ChatBot {
         }
     }
 
-    sendMessage() {
-        let messageText = this.userInput.value;
-        if (!messageText.trim()) return;  // Empty or only whitespace, don't send
-
-        let message = {
-            action: 'sendMessage',
-            text: messageText
-        };
-
-        this.socket.send(JSON.stringify(message));
-        this.updateChatBox(`You: ${messageText}`);
-        this.userInput.value = '';  // Clear the input field
+    delegateSendEvent(event) {
+        if (event.target.tagName === 'BUTTON' && event.target.textContent === 'Send') {
+            this.sendMessage();
+        }
     }
 
-    updateChatBox(text) {
-        let messageDiv = document.createElement('div');
-        messageDiv.textContent = text;
+    sendMessage() {
+        const message = this.userInput.value.trim();
+        if (message) {
+            this.updateChat('You: ' + message);
+            const payload = {
+                message: message,
+                sessionId: this.sessionId
+            };
+
+            this.ws.send(JSON.stringify({
+                routeKey: "sendMessage",
+                body: JSON.stringify(payload)
+            }));
+            
+            this.userInput.value = '';
+        }
+    }
+
+    updateChat(message) {
+        const messageDiv = document.createElement('div');
+        messageDiv.textContent = message;
         this.chatBox.appendChild(messageDiv);
-        this.chatBox.scrollTop = this.chatBox.scrollHeight;  // Auto-scroll to the newest message
+        this.chatBox.scrollTop = this.chatBox.scrollHeight;
     }
 }
 
-// Initialize ChatBot and set up the button event listener
-document.addEventListener('DOMContentLoaded', () => {
-    const chatbot = new ChatBot();
-    document.querySelector('button').addEventListener('click', chatbot.sendMessage);
-});
+// Assuming a session ID mechanism is in place. Replace 'YOUR_SESSION_ID' as needed.
+const endpoint = "wss://13db75kd0a.execute-api.us-east-1.amazonaws.com/production";
+const sessionId = 1;
+const chatbot = new ChatBot(endpoint, sessionId);
