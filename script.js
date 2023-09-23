@@ -74,6 +74,6 @@ class ChatBot {
 
 // Initialize ChatBot and set up the button event listener
 document.addEventListener('DOMContentLoaded', () => {
-    const chatbot = new ChatBot('wss://13db75kd0a.execute-api.us-east-1.amazonaws.com/production');
+    const chatbot = new ChatBot();
     document.querySelector('button').addEventListener('click', chatbot.sendMessage);
 });
