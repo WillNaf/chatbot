@@ -1,6 +1,6 @@
 class ChatBot {
     constructor(endpoint) {
-        this.endpoint = endpoint;
+        this.endpoint = 'wss://13db75kd0a.execute-api.us-east-1.amazonaws.com/production';
         this.socket = null;
         this.chatBox = document.getElementById('chat-box');
         this.userInput = document.getElementById('user-input');
