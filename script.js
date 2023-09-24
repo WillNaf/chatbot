@@ -54,24 +54,20 @@ class ChatBot {
         const message = this.userInput.value.trim();
         if (message) {
             this.updateChat('You: ' + message);
+            
             const payload = {
-                message: message,
-                sessionId: this.sessionId
+                action: "sendMessage",
+                data: {
+                    message: message,
+                    sessionId: this.sessionId
+                }
             };
     
-            console.log("Triggered sendMessage function with message:", message);
-            console.log("Payload to be sent:", payload);
-    
-            this.ws.send(JSON.stringify({
-                routeKey: "sendMessage",
-                body: JSON.stringify(payload)
-            }));
-    
-            console.log("Message sent to WebSocket backend.");
-    
+            this.ws.send(JSON.stringify(payload));
             this.userInput.value = '';
         }
     }
+
 
     updateChat(message) {
         const messageDiv = document.createElement('div');
