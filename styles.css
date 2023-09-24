@@ -7,16 +7,13 @@ body, html {
 }
 
 .chat-app {
-    max-width: 600px;
-    margin: 5% auto;
-    border: 1px solid #e3e9ef;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    height: 60vh;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    border: none;
+    box-shadow: none;
 }
+
 
 .chat-header {
     background-color: #3498db;
