@@ -71,9 +71,7 @@ class ChatBot {
             this.userInput.value = '';
         }
     }
-
-
-
+    
     updateChat(message) {
         const messageDiv = document.createElement('div');
         messageDiv.textContent = message;
