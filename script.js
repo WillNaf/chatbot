@@ -43,7 +43,13 @@ class ChatBot {
             console.error('Connection died');
         }
     }
-
+    
+    checkEnterKey(event) {
+        if (event.key === 'Enter') {
+            this.sendMessage();
+        }
+    }
+    
     delegateSendEvent(event) {
         if (event.target.tagName === 'BUTTON' && event.target.textContent === 'Send') {
             this.sendMessage();
