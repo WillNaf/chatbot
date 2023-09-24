@@ -58,12 +58,13 @@ class ChatBot {
                 message: message,
                 sessionId: this.sessionId
             };
-
             this.ws.send(JSON.stringify({
                 routeKey: "sendMessage",
-                body: JSON.stringify(payload)
+                body: JSON.stringify({
+                    message: message,
+                    sessionId: this.sessionId
+                })
             }));
-            
             this.userInput.value = '';
         }
     }
