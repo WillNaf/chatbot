@@ -58,10 +58,17 @@ class ChatBot {
                 message: message,
                 sessionId: this.sessionId
             };
-        this.ws.send(JSON.stringify({
-            routeKey: "sendMessage",
-            body: JSON.stringify(payload)
-        }));
+    
+            console.log("Triggered sendMessage function with message:", message);
+            console.log("Payload to be sent:", payload);
+    
+            this.ws.send(JSON.stringify({
+                routeKey: "sendMessage",
+                body: JSON.stringify(payload)
+            }));
+    
+            console.log("Message sent to WebSocket backend.");
+    
             this.userInput.value = '';
         }
     }
