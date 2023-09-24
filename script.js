@@ -16,6 +16,8 @@ class ChatBot {
         this.ws.addEventListener('close', this.onConnectionClose.bind(this));
 
         document.addEventListener('click', this.delegateSendEvent.bind(this));
+        this.userInput.addEventListener('keyup', this.delegateSendEvent.bind(this));
+
     }
 
     onConnectionOpen(event) {
@@ -44,14 +46,12 @@ class ChatBot {
         }
     }
     
-    checkEnterKey(event) {
-        if (event.key === 'Enter') {
-            this.sendMessage();
-        }
-    }
-    
     delegateSendEvent(event) {
         if (event.target.tagName === 'BUTTON' && event.target.textContent === 'Send') {
+            this.sendMessage();
+        }
+        else if (event.target.id === 'user-input' && event.key === 'Enter') {
+            event.preventDefault();  
             this.sendMessage();
         }
     }
