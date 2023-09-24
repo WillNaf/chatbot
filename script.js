@@ -76,7 +76,6 @@ class ChatBot {
     }
 }
 
-// Assuming a session ID mechanism is in place. Replace 'YOUR_SESSION_ID' as needed.
 const endpoint = "wss://13db75kd0a.execute-api.us-east-1.amazonaws.com/production";
 const sessionId = "1";
 const chatbot = new ChatBot(endpoint, sessionId);
