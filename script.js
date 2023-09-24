@@ -26,8 +26,11 @@ class ChatBot {
         const data = JSON.parse(event.data);
         if (data.type === 'botResponse') {
             this.updateChat('Bot: ' + data.text);
+        } else if (data.type === 'error') {
+            this.updateChat('Error: ' + data.text);
         }
     }
+
 
     onError(error) {
         console.error("WebSocket Error:", error);
