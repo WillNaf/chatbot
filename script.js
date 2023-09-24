@@ -54,19 +54,18 @@ class ChatBot {
         const message = this.userInput.value.trim();
         if (message) {
             this.updateChat('You: ' + message);
-            
             const payload = {
-                action: "sendMessage",
-                data: {
+                routeKey: "sendMessage",
+                body: JSON.stringify({
                     message: message,
                     sessionId: this.sessionId
-                }
+                })
             };
-    
             this.ws.send(JSON.stringify(payload));
             this.userInput.value = '';
         }
     }
+
 
 
     updateChat(message) {
